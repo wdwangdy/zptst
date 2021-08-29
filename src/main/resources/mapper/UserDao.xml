@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.demo.zptst.dao.UserDao">
+    <resultMap type="com.demo.zptst.entity.User" id="UserResult">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="dob" column="dob" jdbcType="DATE"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="createdAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="createUser" parameterType="com.demo.zptst.entity.User">
+        insert into user(name,dob,address,description)
+        values(#{name},#{dob},#{address},#{description})
+    </insert>
+
+    <select id="getUsers" parameterType="Map" resultMap="UserResult">
+        select id,name,dob,address,description,createdat from user
+        order by id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getFollowers" resultMap="UserResult">
+        SELECT id, name, dob, address, description, createdat FROM USER 
+        WHERE id IN ( SELECT followid FROM relation WHERE fromid = #{userid} ) ORDER BY id DESC
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+ 	<select id="getTotalUser" parameterType="Map" resultType="int">
+        select count(1) from user
+    </select>
+   	<select id="getTotalFollower" resultType="int">
+        select count(1) from relation where fromid = #{userid} 
+    </select>
+    <select id="getUserById" resultMap="UserResult">
+		select id,name,dob,address,description,createdAt from user
+        where id=#{id} limit 1
+	</select>
+
+    <select id="getUserByName" resultMap="UserResult">
+		select id,name,dob,address,description,createdAt from user
+        where name = #{name} limit 1
+	</select>
+
+    <update id="updateUser">
+        update user set name = #{name},dob = #{dob},address = #{address},
+        description = #{description} where id =#{id} 
+    </update>
+
+    <update id="deleteBatch">
+       delete from user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="getAllUsers" resultMap="UserResult">
+        select id,name,address,description,createdAt from user
+        order by createdAt desc
+    </select>
+</mapper>
