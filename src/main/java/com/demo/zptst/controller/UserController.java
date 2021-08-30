@@ -44,6 +44,7 @@ public class UserController {
         	logger.error("分页参数异常！");
             return ResultGenerator.genErrorResult(Constants.ResultCodeType.RESULT_CODE_PARAM_ERROR.value, "分页参数异常！");
         }
+    	params.put("userid", "");
         PageUtil pageUtil = new PageUtil(params);
         return ResultGenerator.genSuccessResult(UserService.getUsers(pageUtil));
     }
