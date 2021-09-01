@@ -20,6 +20,6 @@ public class ResourceConfiguration extends ResourceServerConfigurerAdapter{
 		public void configure(HttpSecurity http) throws Exception {
 			http.authorizeRequests()
 				.antMatchers("/user/update","/user/delete").hasRole("ADMIN")
-				.antMatchers("/user/get","/user/getFollowers","/user/getNearByFriends","/user/create").hasRole("USER");
+				.antMatchers("/user/get","/user/getFollowers","/user/getNearByFriends","/user/create").hasAnyRole("ADMIN","USER");
 		}
 }
